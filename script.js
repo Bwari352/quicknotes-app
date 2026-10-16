@@ -71,7 +71,7 @@ noteForm.addEventListener("submit", function (event) {
     const text = noteInput.value.trim();
 
     if (text === "") {
-        errorMessage.textContent = "Please type a note first.";
+        errorMessage.textContent = "Please type a note first";
         return;
     }
 
