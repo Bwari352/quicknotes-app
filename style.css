@@ -97,6 +97,20 @@ button:hover {
     margin-bottom: 12px;
     overflow-wrap: anywhere;
 }
+/* Personal notes: teal */
+#notes-list li.category-personal {
+    border-left: 6px solid #00897b;
+}
+
+/* Work notes: dark red */
+#notes-list li.category-work {
+    border-left: 6px solid #8e2424;
+}
+
+/* Study notes: blue */
+#notes-list li.category-study {
+    border-left: 6px solid #1976d2;
+}
 /* 11. Category styles */
 .category-personal {
     border-left-color:teal;
