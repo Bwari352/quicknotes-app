@@ -158,7 +158,14 @@ button:hover {
     margin-top: 10px;
     font-weight: bold;
 }
+#clear-all-btn {
+    background-color: #b83232;
+    margin-bottom: 12px;
+}
 
+#clear-all-btn:hover {
+    background-color: #842323;
+}
 /* 13. Footer */
 footer {
     background-color: #e1e9e9;
