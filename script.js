@@ -7,26 +7,48 @@ const noteCount = document.querySelector("#note-count");
 const errorMessage = document.querySelector("#error-message");
 const searchInput = document.querySelector("#search-input");
 
-// Store notes as an array of objects.
+const STORAGE_KEY = "quicknotes-notes";
+
+// Load previously saved notes.
 let notes = [];
+
+try {
+    const savedNotes = localStorage.getItem(STORAGE_KEY);
+    notes = savedNotes ? JSON.parse(savedNotes) : [];
+
+    if (!Array.isArray(notes)) {
+        notes = [];
+    }
+} catch (error) {
+    notes = [];
+}
+
+function saveNotes() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+}
 
 function render() {
     notesList.replaceChildren();
 
-    notes.forEach(function (note) {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+
+    const filteredNotes = notes.filter(function (note) {
+        return note.text.toLowerCase().includes(searchTerm);
+    });
+
+    filteredNotes.forEach(function (note) {
         const noteCard = document.createElement("li");
 
-        // Apply a category class dynamically.
         noteCard.classList.add(
             "category-" + note.category.toLowerCase()
         );
 
-        const noteText = document.createElement("p");
-        noteText.textContent = note.text;
-
         const categoryLabel = document.createElement("span");
         categoryLabel.classList.add("category-label");
         categoryLabel.textContent = note.category;
+
+        const noteText = document.createElement("p");
+        noteText.textContent = note.text;
 
         const date = document.createElement("small");
         date.classList.add("note-date");
@@ -41,6 +63,7 @@ function render() {
                 return item.id !== note.id;
             });
 
+            saveNotes();
             render();
         });
 
@@ -54,7 +77,14 @@ function render() {
         notesList.appendChild(noteCard);
     });
 
-    // Update the number of notes.
+    // Show a message when a search has no matches.
+    if (filteredNotes.length === 0 && searchTerm !== "") {
+        const emptyMessage = document.createElement("li");
+        emptyMessage.textContent = "No notes match your search.";
+        notesList.appendChild(emptyMessage);
+    }
+
+    // Update the count using all saved notes.
     if (notes.length === 0) {
         noteCount.textContent = "You have no notes yet.";
     } else if (notes.length === 1) {
@@ -71,7 +101,7 @@ noteForm.addEventListener("submit", function (event) {
     const text = noteInput.value.trim();
 
     if (text === "") {
-        errorMessage.textContent = "Please type a note first";
+        errorMessage.textContent = "Please type a note first.";
         return;
     }
 
@@ -89,6 +119,7 @@ noteForm.addEventListener("submit", function (event) {
     };
 
     notes.push(note);
+    saveNotes();
 
     errorMessage.textContent = "";
     noteInput.value = "";
@@ -96,5 +127,8 @@ noteForm.addEventListener("submit", function (event) {
     render();
 });
 
-// Display the initial empty state.
+// Search as the user types.
+searchInput.addEventListener("input", render);
+
+// Display saved notes on page load.
 render();
